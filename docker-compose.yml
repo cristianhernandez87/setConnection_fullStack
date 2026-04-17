@@ -1,0 +1,39 @@
+services:
+  # 1. DB Relacional: PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: dex_db
+    restart: always
+    environment:
+      POSTGRES_USER: user_dev
+      POSTGRES_PASSWORD: password_dev
+      POSTGRES_DB: dex_sharing_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # 2. Redis para Colas de Procesamiento (IA)
+  redis:
+    image: redis:7-alpine
+    container_name: dex_redis
+    ports:
+      - "6379:6379"
+
+  # 3. MinIO: Emulador de Amazon S3 (Para tus archivos .mp3)
+  storage:
+    image: minio/minio
+    container_name: dex_storage
+    ports:
+      - "9000:9000"    # API de archivos
+      - "9001:9001"    # Consola Web (UI)
+    environment:
+      MINIO_ROOT_USER: admin_dev
+      MINIO_ROOT_PASSWORD: password_storage
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+volumes:
+  postgres_data:
+  minio_data:
