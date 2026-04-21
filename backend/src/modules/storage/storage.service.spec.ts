@@ -1,18 +1,19 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { StorageService } from './storage.service';
+import { S3StorageProvider } from './storage.service';
 
-describe('StorageService', () => {
-  let service: StorageService;
+describe('S3StorageProvider', () => {
+  let provider: S3StorageProvider;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [StorageService],
-    }).compile();
+  beforeEach(() => {
+    // Simulamos el ConfigService básico para no depender de variables de entorno reales
+    const mockConfigService = {
+      get: jest.fn().mockReturnValue('localhost'),
+    } as any;
 
-    service = module.get<StorageService>(StorageService);
+    // Instanciamos la clase correcta
+    provider = new S3StorageProvider(mockConfigService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('debería estar definido', () => {
+    expect(provider).toBeDefined();
   });
 });

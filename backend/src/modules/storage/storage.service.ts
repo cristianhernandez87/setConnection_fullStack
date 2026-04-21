@@ -9,19 +9,19 @@ export class S3StorageProvider implements IStorageProvider {
 
   constructor(private configService: ConfigService) {
     this.s3Client = new S3Client({
-        region: 'us-east-1',
-        endpoint: `http://${this.configService.get<string>('S3_ENDPOINT')}:${this.configService.get<string>('S3_PORT')}`,
-        credentials: {
-            accessKeyId: this.configService.get<string>('S3_ACCESS_KEY') ?? '',
-            secretAccessKey: this.configService.get<string>('S3_SECRET_KEY') ?? '',
-        },
-        forcePathStyle: true,
+      region: 'us-east-1',
+      endpoint: `http://${this.configService.get<string>('S3_ENDPOINT')}:${this.configService.get<string>('S3_PORT')}`,
+      credentials: {
+        accessKeyId: this.configService.get<string>('S3_ACCESS_KEY') ?? '',
+        secretAccessKey: this.configService.get<string>('S3_SECRET_KEY') ?? '',
+      },
+      forcePathStyle: true,
     });
   }
 
   async uploadFile(file: Express.Multer.File, bucket: string): Promise<string> {
     const fileKey = `${Date.now()}-${file.originalname}`;
-    
+
     await this.s3Client.send(
       new PutObjectCommand({
         Bucket: bucket,

@@ -1,3 +1,6 @@
+import { Express } from 'express';
+import 'multer';
+
 export interface IStorageProvider {
   uploadFile(file: Express.Multer.File, bucket: string): Promise<string>;
 }
