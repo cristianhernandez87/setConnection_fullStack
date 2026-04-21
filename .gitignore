@@ -1,95 +1,25 @@
-# ======================
-# 📦 DEPENDENCIAS
-# ======================
+# Node
 node_modules/
-jspm_packages/
-.pnp
-.pnp.js
+**/node_modules/
 
-# ======================
-# 🏗️ BUILD / OUTPUT
-# ======================
+# Build
 dist/
 build/
-out/
-.next/
-.nuxt/
-.cache/
-coverage/
+**/dist/
+**/build/
 
-# ======================
-# ⚙️ ENTORNOS
-# ======================
-.env
-.env.*
-!.env.example
-
-# ======================
-# 🧾 LOGS
-# ======================
-logs/
+# Logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-# ======================
-# 💻 SISTEMA OPERATIVO
-# ======================
+# Env
+.env
+
+# OS
 .DS_Store
-Thumbs.db
 
-# ======================
-# 🧪 TESTING
-# ======================
-.nyc_output/
-
-# ======================
-# 🧠 IDEs / EDITORES
-# ======================
+# IDE
+.vscode/
 .idea/
-.vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
-!.vscode/launch.json
-!.vscode/tasks.json
 
-.project
-.classpath
-.settings/
-*.sublime-workspace
-
-# ======================
-# 🐳 DOCKER
-# ======================
-docker-data/
-*.tar
-
-# ======================
-# 🧱 RUNTIME
-# ======================
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# ======================
-# 🧹 TEMP
-# ======================
-.temp/
-.tmp/
-tmp/
-
-# ======================
-# 📊 REPORTES
-# ======================
-report.*.json
-
-# ======================
-# 🔐 ARCHIVOS SENSIBLES
-# ======================
-*.pem
-*.key
-*.crt
+# Coverage
+coverage/
