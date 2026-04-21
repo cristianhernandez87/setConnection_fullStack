@@ -15,27 +15,25 @@ export enum SetStatus {
 @Entity('sets') // Nombre de la tabla en PostgreSQL
 export class SetEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string | undefined;
+  id!: string;
 
-  @Column({ length: 100 })
-  title: string | undefined;
+  // Le decimos explícitamente a Postgres que es un varchar (texto corto)
+  @Column({ type: 'varchar', length: 100 })
+  title!: string;
 
+  // Si quieres que la descripción sea opcional, ponle nullable: true, pero el tipo TS sigue siendo string
   @Column({ type: 'text', nullable: true })
-  description: string | undefined;
+  description!: string;
 
-  @Column()
-  filename: string | undefined;
+  @Column({ type: 'varchar' })
+  filename!: string;
 
-  @Column()
-  audioUrl: string | undefined;
+  @Column({ type: 'varchar' })
+  audioUrl!: string;
 
-  @Column({
-    type: 'enum',
-    enum: SetStatus,
-    default: SetStatus.PENDING,
-  })
-  status: SetStatus | undefined;
+  @Column({ type: 'varchar', default: 'PENDING' })
+  status!: string;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date | undefined;
+  @CreateDateColumn()
+  createdAt!: Date;
 }
