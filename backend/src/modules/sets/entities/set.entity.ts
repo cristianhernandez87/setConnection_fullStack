@@ -3,25 +3,24 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { TrackMarkerEntity } from './track-marker.entity';
 
-// Definimos los estados posibles de un Set
 export enum SetStatus {
   PENDING = 'PENDING',
   PROCESSING = 'PROCESSING',
   READY = 'READY',
 }
 
-@Entity('sets') // Nombre de la tabla en PostgreSQL
+@Entity('sets')
 export class SetEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  // Le decimos explícitamente a Postgres que es un varchar (texto corto)
   @Column({ type: 'varchar', length: 100 })
   title!: string;
 
-  // Si quieres que la descripción sea opcional, ponle nullable: true, pero el tipo TS sigue siendo string
   @Column({ type: 'text', nullable: true })
   description!: string;
 
@@ -43,4 +42,7 @@ export class SetEntity {
 
   @CreateDateColumn()
   createdAt!: Date;
+
+  @OneToMany(() => TrackMarkerEntity, (marker) => marker.set, { cascade: true })
+  markers!: TrackMarkerEntity[];
 }

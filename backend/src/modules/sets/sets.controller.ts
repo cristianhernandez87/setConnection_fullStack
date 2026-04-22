@@ -7,6 +7,8 @@ import {
   ParseFilePipe,
   FileTypeValidator,
   MaxFileSizeValidator,
+  Get,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateSetDto } from './dto/create-set.dto';
@@ -15,17 +17,20 @@ import { SetsService } from './sets.service';
 @Controller('sets')
 export class SetsController {
   constructor(private readonly setsService: SetsService) {}
+  @Get(':id/tracklist')
+  async getTracklist(@Param('id') id: string) {
+    return await this.setsService.getTracklist(id);
+  }
 
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
       limits: {
-        fileSize: 2 * 1024 * 1024 * 1024, // 2GB exactos en bytes
+        fileSize: 2 * 1024 * 1024 * 1024,
       },
     }),
   )
   async uploadSet(
-    // 1. Validamos el archivo (que sea audio y no pese más de 200MB)
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -35,10 +40,8 @@ export class SetsController {
       }),
     )
     file: Express.Multer.File,
-    // 2. Validamos los campos de texto con nuestro DTO
     @Body() createSetDto: CreateSetDto,
   ) {
-    // Subimos el archivo a MinIO
     const savedSet = await this.setsService.createSet(file, createSetDto);
 
     return {
