@@ -40,6 +40,7 @@ export class SetsService {
       description: createSetDto.description,
       filename: cleanFileName,
       audioUrl: fileKey,
+      audioSize: file.size,
       // El 'status' se pone en PENDING por defecto gracias a nuestra SetEntity
     });
 

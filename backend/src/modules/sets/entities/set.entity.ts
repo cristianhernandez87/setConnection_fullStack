@@ -31,6 +31,13 @@ export class SetEntity {
   @Column({ type: 'varchar' })
   audioUrl!: string;
 
+  @Column({
+    type: 'bigint',
+    nullable: true,
+    comment: 'Tamaño del archivo en bytes',
+  })
+  audioSize: number | undefined;
+
   @Column({ type: 'varchar', default: 'PENDING' })
   status!: string;
 

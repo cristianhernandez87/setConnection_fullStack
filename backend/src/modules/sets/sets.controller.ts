@@ -17,13 +17,19 @@ export class SetsController {
   constructor(private readonly setsService: SetsService) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: {
+        fileSize: 2 * 1024 * 1024 * 1024, // 2GB exactos en bytes
+      },
+    }),
+  )
   async uploadSet(
     // 1. Validamos el archivo (que sea audio y no pese más de 200MB)
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 200 }),
+          new MaxFileSizeValidator({ maxSize: 2 * 1024 * 1024 * 1024 }),
           new FileTypeValidator({ fileType: '.(mp3|wav|mpeg)' }),
         ],
       }),
