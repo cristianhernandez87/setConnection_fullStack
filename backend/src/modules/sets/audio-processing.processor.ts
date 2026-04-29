@@ -1,4 +1,4 @@
-import { Process, Processor } from '@nestjs/bull'; // Bull clásico
+import { Process, Processor } from '@nestjs/bull';
 import bull from 'bull';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,9 +7,10 @@ import {
   TrackMarkerEntity,
   MarkerStatus,
 } from './entities/track-marker.entity';
-import { SetsGateway } from './sets.gateway';
+// import { SetsGateway } from './sets.gateway';
 import { AnalysisGateway } from './analysis.gateway';
-import { SourceProvider } from './entities/track-source.entity';
+import { AudioMatchingService } from './audio-matching.service';
+import { AggregatorService } from './aggregator.service';
 
 @Processor('audio-processing-queue')
 export class AudioProcessingProcessor {
@@ -18,8 +19,10 @@ export class AudioProcessingProcessor {
     private readonly setRepository: Repository<SetEntity>,
     @InjectRepository(TrackMarkerEntity)
     private readonly markerRepository: Repository<TrackMarkerEntity>,
-    private readonly setsGateway: SetsGateway,
+    // private readonly setsGateway: SetsGateway,
     private readonly analysisGateway: AnalysisGateway,
+    private readonly audioMatchingService: AudioMatchingService,
+    private readonly aggregatorService: AggregatorService,
   ) {}
 
   @Process('analyze-audio')
@@ -37,40 +40,45 @@ export class AudioProcessingProcessor {
     set.status = SetStatus.PROCESSING;
     await this.setRepository.save(set);
 
-    console.log(`[Worker] 🚀 Iniciando análisis del Set: ${set.title}`);
+    const totalSimulatedSeconds = 1200;
 
-    for (let progress = 10; progress <= 100; progress += 30) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      this.setsGateway.emitAnalysisProgress(setId, progress);
-      console.log(`[Worker] 📈 Progreso: ${progress}%`);
+    for (let second = 0; second <= totalSimulatedSeconds; second += 300) {
+      const progress = Math.round((second / totalSimulatedSeconds) * 100);
+      this.analysisGateway.emitAnalysisProgress(setId, progress);
+      console.log(`[Worker] 📈 Analizando segundo ${second}... (${progress}%)`);
 
-      if (progress === 40) {
-        const mockTrack = this.markerRepository.create({
-          start_time: 120,
-          title: 'Deep House Vibes',
-          artist: 'Zy Artist',
+      // 🧠 Llamamos a nuestra "IA"
+      const match = await this.audioMatchingService.matchAudio(setId, second);
+
+      if (match) {
+        console.log(
+          `[Worker] 🎯 ¡Match encontrado!: ${match.title} - ${match.artist}`,
+        );
+        const links = await this.aggregatorService.findTrackLinks(
+          match.title,
+          match.artist,
+        );
+        const marker = this.markerRepository.create({
+          start_time: match.startTime,
+          title: match.title,
+          artist: match.artist,
           status: MarkerStatus.MATCHED,
           set: set,
-          sources: [
-            {
-              provider: SourceProvider.SPOTIFY,
-              external_url: 'https://open.spotify.com/track/example',
-              external_id: 'spotify-123',
-            },
-          ],
+          sources: links,
         });
 
-        const savedTrack = await this.markerRepository.save(mockTrack);
-        // AC: Emitir evento track:found
-        this.analysisGateway.emitTrackFound(setId, savedTrack);
-        console.log(`[Worker] ✅ Track y Fuente guardados en DB`);
+        const savedMarker = await this.markerRepository.save(marker);
+        this.analysisGateway.emitTrackFound(setId, savedMarker);
       }
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
 
     set.status = SetStatus.READY;
     await this.setRepository.save(set);
 
-    this.setsGateway.emitAnalysisCompleted(setId);
+    //this.setsGateway.emitAnalysisCompleted(setId);
+    this.analysisGateway.emitAnalysisCompleted(setId);
     console.log(`[Worker] ✨ Análisis completado para Set: ${set.id}`);
 
     return { success: true, setId };

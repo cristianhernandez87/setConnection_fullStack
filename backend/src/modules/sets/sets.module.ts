@@ -11,9 +11,13 @@ import { TrackMarkerEntity } from './entities/track-marker.entity';
 import { AudioProcessingProcessor } from './audio-processing.processor';
 import { SetsGateway } from './sets.gateway';
 import { AnalysisGateway } from './analysis.gateway';
+import { AudioMatchingService } from './audio-matching.service';
+import { HttpModule } from '@nestjs/axios/dist/http.module';
+import { AggregatorService } from './aggregator.service';
 
 @Module({
   imports: [
+    HttpModule,
     TypeOrmModule.forFeature([SetEntity, TrackMarkerEntity, TrackSourceEntity]),
     BullModule.registerQueue({ name: 'audio-processing-queue' }),
     StorageModule,
@@ -28,6 +32,9 @@ import { AnalysisGateway } from './analysis.gateway';
     SetsGateway,
     AudioProcessingProcessor,
     AnalysisGateway,
+    AudioProcessingProcessor,
+    AudioMatchingService,
+    AggregatorService,
   ],
 })
 export class SetsModule {}
