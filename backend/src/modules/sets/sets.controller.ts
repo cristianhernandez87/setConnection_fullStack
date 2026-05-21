@@ -53,7 +53,6 @@ export class SetsController {
         url: playlistUrl,
       };
     } catch (error) {
-      // ESTO TE MOSTRARÁ EL ERROR REAL DE SPOTIFY EN EL NAVEGADOR
       return {
         error: 'Fallo en Spotify',
         endpoint_que_fallo: error.config?.url,
