@@ -1,34 +1,61 @@
 {
-  "hash": "f9033ebe",
-  "configHash": "6c688c00",
+  "hash": "098def38",
+  "configHash": "602bea3b",
   "lockfileHash": "262db038",
-  "browserHash": "6f203eed",
+  "browserHash": "75efd94a",
   "optimized": {
+    "@angular/common": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
+      "file": "@angular_common.js",
+      "fileHash": "0d538e6a",
+      "needsInterop": false
+    },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "30cba586",
+      "fileHash": "813c0ec9",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "c416cd8e",
+      "fileHash": "6d3414bd",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "c2ec5bd4",
+      "fileHash": "ea88949b",
+      "needsInterop": false
+    },
+    "@angular/common/http": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
+      "file": "@angular_common_http.js",
+      "fileHash": "6a1aa906",
+      "needsInterop": false
+    },
+    "@angular/forms": {
+      "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
+      "file": "@angular_forms.js",
+      "fileHash": "284999da",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-NJ3YA74T": {
-      "file": "chunk-NJ3YA74T.js"
+    "chunk-SHHDWGUW": {
+      "file": "chunk-SHHDWGUW.js"
     },
-    "chunk-GAQO4RRN": {
-      "file": "chunk-GAQO4RRN.js"
+    "chunk-W2GONAFO": {
+      "file": "chunk-W2GONAFO.js"
+    },
+    "chunk-WSCHJPAE": {
+      "file": "chunk-WSCHJPAE.js"
+    },
+    "chunk-FA7AOPXW": {
+      "file": "chunk-FA7AOPXW.js"
+    },
+    "chunk-MP5LKA7A": {
+      "file": "chunk-MP5LKA7A.js"
     }
   }
 }

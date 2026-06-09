@@ -1,0 +1,83 @@
+<div class="max-w-2xl mx-auto mt-12">
+  
+  <div class="text-center mb-10">
+    <h1 class="text-4xl font-extrabold mb-3 tracking-tight text-white">Upload your <span class="text-set-neon">Set</span></h1>
+    <p class="text-gray-400">Arrastra tu archivo de audio para que la IA haga su magia.</p>
+    <p class="text-xs text-gray-500 mt-1">Formatos soportados: MP3, WAV (Max 2GB)</p>
+  </div>
+
+  <div
+    class="border-2 border-dashed rounded-2xl p-16 text-center transition-all duration-300 cursor-pointer"
+    [class.border-set-neon]="isDragging"
+    [class.bg-set-neon]="isDragging"
+    [class.bg-opacity-5]="isDragging"
+    [class.border-gray-600]="!isDragging"
+    [class.bg-set-surface]="!isDragging"
+    [class.hover:border-gray-400]="!isDragging"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    (click)="fileInput.click()"
+  >
+    <input 
+      type="file" 
+      #fileInput 
+      class="hidden" 
+      accept=".mp3,.wav,audio/mpeg,audio/wav" 
+      (change)="onFileSelected($event)"
+    >
+
+    <div *ngIf="!selectedFile" class="pointer-events-none">
+      <div class="w-16 h-16 mx-auto mb-4 bg-gray-800 rounded-full flex items-center justify-center">
+        <span class="text-3xl">🎧</span>
+      </div>
+      <p class="text-lg text-gray-300">
+        <span class="text-set-neon font-semibold">Haz clic para buscar</span> o arrastra y suelta
+      </p>
+    </div>
+
+    <div *ngIf="selectedFile" class="pointer-events-none flex flex-col items-center">
+      <div class="w-16 h-16 mx-auto mb-4 bg-set-neon/20 rounded-full flex items-center justify-center border border-set-neon/50">
+        <span class="text-3xl">🎵</span>
+      </div>
+      <p class="text-xl font-bold text-white mb-1">{{ selectedFile.name }}</p>
+      <p class="text-sm text-set-neon">¡Archivo cargado y listo!</p>
+    </div>
+
+  </div>
+
+  <div class="max-w-2xl mx-auto mt-12">
+    <div *ngIf="selectedFile && !isUploading && !uploadSuccess" class="mt-8 bg-set-surface p-6 rounded-xl border border-gray-800">
+        <h3 class="text-xl font-bold text-white mb-4">Detalles del Set</h3>
+        
+        <div class="mb-4">
+        <label class="block text-gray-400 text-sm mb-2">Título del Set</label>
+        <input type="text" [(ngModel)]="setTitle" placeholder="Ej: Techno Industrial en Bogotá" 
+                class="w-full bg-set-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-set-neon transition-colors">
+        </div>
+
+        <div class="mb-6">
+        <label class="block text-gray-400 text-sm mb-2">Descripción</label>
+        <textarea [(ngModel)]="setDescription" placeholder="Vibes, tracklist..." rows="3"
+                    class="w-full bg-set-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-set-neon transition-colors"></textarea>
+        </div>
+
+        <button (click)="uploadSet()" 
+                class="w-full bg-set-neon text-black font-bold text-lg py-4 rounded-lg hover:bg-green-400 transition-colors">
+        Publicar Set 🚀
+        </button>
+    </div>
+
+    <div *ngIf="isUploading" class="mt-8 bg-set-surface p-6 rounded-xl border border-gray-800">
+        <h3 class="text-xl font-bold text-white mb-4">Subiendo: {{ selectedFile?.name }}</h3>
+        <div class="w-full bg-gray-900 rounded-full h-2 overflow-hidden border border-gray-800">
+        <div class="bg-set-neon h-2 rounded-full transition-all duration-200" [style.width.%]="uploadProgress"></div>
+        </div>
+    </div>
+
+    <div *ngIf="uploadSuccess" class="mt-8 bg-set-neon/10 border border-set-neon/50 p-6 rounded-xl text-center">
+        <h3 class="text-2xl font-bold text-set-neon mb-2">¡Transmisión Exitosa! 🎉</h3>
+    </div>
+
+    </div>
+</div>

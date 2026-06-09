@@ -1,0 +1,25 @@
+<div class="min-h-screen bg-set-dark text-white font-sans selection:bg-set-neon selection:text-black">
+  <nav class="border-b border-set-surface bg-set-dark/80 backdrop-blur-md fixed w-full top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <div class="flex items-center gap-3 cursor-pointer">
+        <div class="w-8 h-8 rounded bg-set-neon/10 flex items-center justify-center border border-set-neon/30">
+          <div class="w-3 h-3 rounded-full bg-set-neon animate-pulse"></div>
+        </div>
+        <span class="font-bold text-xl tracking-wider text-gray-100">
+          SET<span class="text-set-neon">CONNECTION</span>
+        </span>
+      </div>
+
+      <div class="hidden md:flex gap-6 text-sm font-medium text-gray-400">
+        <a href="#" class="hover:text-set-neon transition-colors">Upload Set</a>
+        <a href="#" class="hover:text-set-neon transition-colors">My Library</a>
+      </div>
+
+    </div>
+  </nav>
+
+  <main class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen flex flex-col">
+    <router-outlet></router-outlet>
+  </main>
+</div>
