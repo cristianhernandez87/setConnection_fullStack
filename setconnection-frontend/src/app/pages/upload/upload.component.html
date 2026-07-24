@@ -79,5 +79,15 @@
         <h3 class="text-2xl font-bold text-set-neon mb-2">¡Transmisión Exitosa! 🎉</h3>
     </div>
 
-    </div>
+    <button 
+      (click)="audioService.loadAndPlay('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'Dex Music - Techno Industrial Test Set')"
+      style="background: #00ffcc; color: #000; padding: 10px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-bottom: 15px;">
+      🎧 Reproducir Set de Prueba
+    </button>
+    <app-waveform [progress]="audioService.progress()"></app-waveform>
+
+    <app-analysis-header></app-analysis-header>
+    <app-track-table></app-track-table>
+
+  </div>
 </div>

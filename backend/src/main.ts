@@ -7,11 +7,16 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Elimina campos basura que el usuario envíe y no estén en el DTO
-      forbidNonWhitelisted: true, // Lanza error si envían propiedades no definidas
+      whitelist: true,
+      forbidNonWhitelisted: true,
     }),
   );
 
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

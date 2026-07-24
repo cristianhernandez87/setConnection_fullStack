@@ -1,0 +1,12 @@
+<div class="analysis-card" *ngIf="isAnalyzing()">
+  <div class="header">
+    <h3 class="title">🤖 IA Analizando Set...</h3>
+    <span class="percentage">{{ progress() }}%</span>
+  </div>
+  
+  <div class="progress-bg">
+    <div class="progress-fill" [style.width.%]="progress()"></div>
+  </div>
+  
+  <p class="complete-text" *ngIf="progress() === 100">✨ ¡Análisis completado con éxito!</p>
+</div>

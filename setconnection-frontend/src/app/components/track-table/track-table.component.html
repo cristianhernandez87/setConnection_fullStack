@@ -1,0 +1,22 @@
+<div class="tracklist-container" *ngIf="tracks().length > 0">
+  <h3 class="neon-title">🎵 Tracks Identificados</h3>
+  
+  <table class="cyber-table">
+    <thead>
+      <tr>
+        <th>Track</th>
+        <th>Artista</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (track of tracks(); track $index) {
+        <tr class="fade-in">
+          <td class="highlight">{{ track.title || track }}</td>
+          <td>{{ track.artist || 'Desconocido' }}</td>
+          <td><span class="badge matched">MATCHED</span></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

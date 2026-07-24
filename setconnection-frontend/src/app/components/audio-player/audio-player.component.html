@@ -1,0 +1,24 @@
+<div class="player-bar" *ngIf="audioService.duration() > 0">
+  <div class="track-info">
+    <span class="neon-icon">🎧</span>
+    <span class="title">{{ audioService.currentTrackTitle() }}</span>
+  </div>
+
+  <div class="controls">
+    @if (audioService.isLoading()) {
+      <div class="cyber-spinner" title="Buffering audio..."></div>
+    } @else {
+      <button class="play-btn" (click)="audioService.togglePlay()">
+        {{ audioService.isPlaying() ? '⏸️' : '▶️' }}
+      </button>
+    }
+  </div>
+
+  <div class="time-info">
+    <span>{{ formatTime(audioService.currentTime()) }}</span>
+    <div class="mini-progress-bg">
+      <div class="mini-progress-fill" [style.width.%]="audioService.progress()"></div>
+    </div>
+    <span>{{ formatTime(audioService.duration()) }}</span>
+  </div>
+</div>

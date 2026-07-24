@@ -1,0 +1,38 @@
+.analysis-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    
+    .title { color: #fff; margin: 0; font-size: 1.2rem; }
+    .percentage { color: #00ffcc; font-weight: bold; font-size: 1.2rem; }
+  }
+  
+  .progress-bg {
+    background: #333;
+    border-radius: 10px;
+    height: 12px;
+    overflow: hidden;
+    
+    .progress-fill {
+      background: #00ffcc;
+      height: 100%;
+      transition: width 0.4s ease; /* Efecto suave de avance */
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.6); /* Brillo neón */
+    }
+  }
+  
+  .complete-text {
+    color: #00ffcc;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 500;
+  }
+}
