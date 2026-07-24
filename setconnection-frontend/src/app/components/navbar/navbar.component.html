@@ -1,0 +1,30 @@
+<header class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-5xl">
+  <nav class="bg-white/80 backdrop-blur-md border border-zinc-200/80 rounded-full px-6 py-3 shadow-sm flex items-center justify-between transition-all hover:shadow-md">
+    
+    <a routerLink="/" class="flex items-center gap-1 text-zinc-900 decoration-none">
+      <span class="font-condensed font-black text-2xl tracking-ultra-tight uppercase">
+        SET<span class="text-bento-cyan">CONNECTION</span>.
+      </span>
+    </a>
+
+    <div class="hidden md:flex items-center gap-8 font-medium text-sm text-zinc-600">
+      <a routerLink="/" routerLinkActive="text-black font-bold" [routerLinkActiveOptions]="{exact: true}" class="hover:text-black transition-colors">
+        Explorar
+      </a>
+      <a *ngIf="isDj()" routerLink="/studio" routerLinkActive="text-black font-bold" class="hover:text-black transition-colors">
+        Studio (DJ)
+      </a>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <a *ngIf="isDj()" routerLink="/upload" class="bg-bento-yellow text-black font-bold px-5 py-2.5 rounded-full text-sm hover:scale-105 transition-transform shadow-sm flex items-center gap-1.5">
+        <span>⚡</span> Subir Set
+      </a>
+      
+      <div class="w-9 h-9 rounded-full bg-zinc-900 text-white font-condensed font-bold text-xs flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity" title="Dex Music">
+        DM
+      </div>
+    </div>
+
+  </nav>
+</header>

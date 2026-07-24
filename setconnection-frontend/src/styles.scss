@@ -1,9 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+/* Importaciones de Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #0f0f11;
-  color: white;
+/* Regla para transiciones suaves al hacer hover en tarjetas Bento */
+@layer components {
+  .bento-card {
+    @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl;
+  }
 }
