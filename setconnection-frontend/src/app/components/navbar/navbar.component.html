@@ -1,5 +1,5 @@
 <header class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-5xl">
-  <nav class="bg-white/80 backdrop-blur-md border border-zinc-200/80 rounded-full px-6 py-3 shadow-sm flex items-center justify-between transition-all hover:shadow-md">
+  <nav class="bg-white/80 backdrop-blur-md border border-zinc-200/80 rounded-full px-6 py-3 shadow-sm flex items-center justify-between transition-all hover:shadow-md relative">
     
     <a routerLink="/" class="flex items-center gap-1 text-zinc-900 decoration-none">
       <span class="font-condensed font-black text-2xl tracking-ultra-tight uppercase">
@@ -11,19 +11,57 @@
       <a routerLink="/" routerLinkActive="text-black font-bold" [routerLinkActiveOptions]="{exact: true}" class="hover:text-black transition-colors">
         Explorar
       </a>
-      <a *ngIf="isDj()" routerLink="/studio" routerLinkActive="text-black font-bold" class="hover:text-black transition-colors">
-        Studio (DJ)
-      </a>
+      
+      @if (authService.isDj()) {
+        <a routerLink="/studio" routerLinkActive="text-black font-bold" class="hover:text-black transition-colors">
+          Studio (DJ)
+        </a>
+      }
     </div>
 
     <div class="flex items-center gap-3">
-      <a *ngIf="isDj()" routerLink="/upload" class="bg-bento-yellow text-black font-bold px-5 py-2.5 rounded-full text-sm hover:scale-105 transition-transform shadow-sm flex items-center gap-1.5">
-        <span>⚡</span> Subir Set
-      </a>
       
-      <div class="w-9 h-9 rounded-full bg-zinc-900 text-white font-condensed font-bold text-xs flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity" title="Dex Music">
-        DM
-      </div>
+      @if (authService.isAuthenticated()) {
+        @if (authService.isDj()) {
+          <a routerLink="/upload" class="bg-bento-yellow text-black font-bold px-5 py-2.5 rounded-full text-sm hover:scale-105 transition-transform shadow-sm flex items-center gap-1.5">
+            <span>⚡</span> Subir Set
+          </a>
+        }
+        
+        <div class="relative">
+          <button 
+            (click)="toggleMenu()"
+            class="w-9 h-9 rounded-full bg-zinc-900 text-white font-condensed font-bold text-xs flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity border-none">
+            {{ authService.currentUser()?.name?.substring(0, 2) || 'US' }}
+          </button>
+
+          @if (isMenuOpen()) {
+            <div class="absolute right-0 mt-3 w-48 bg-white border border-zinc-200 rounded-2xl shadow-xl py-2 z-50 animate-fade-in">
+              <div class="px-4 py-2 border-b border-zinc-100 mb-1">
+                <p class="font-bold text-xs text-zinc-900 leading-tight truncate">{{ authService.currentUser()?.name }}</p>
+                <p class="text-[10px] text-zinc-400 font-condensed uppercase tracking-wider">{{ authService.currentUser()?.role }}</p>
+              </div>
+              
+              <a routerLink="/profile" (click)="isMenuOpen.set(false)" class="block px-4 py-2 text-sm text-zinc-600 hover:bg-zinc-50 hover:text-black transition-colors">
+                👤 Mi Perfil
+              </a>
+              
+              <button 
+                (click)="logout()" 
+                class="block px-4 py-2 text-sm text-zinc-600 hover:bg-zinc-50 hover:text-black transition-colors">
+                Cerrar Sesión
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <button
+          (click)="authService.openModal()" 
+          class="bg-zinc-900 text-white font-condensed font-bold px-6 py-2.5 rounded-full text-sm hover:bg-zinc-800 transition-colors shadow-sm">
+          Iniciar Sesión caxsa
+      </button>
+      }
+
     </div>
 
   </nav>

@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { S3StorageProvider } from './storage.service';
 import { STORAGE_PROVIDER_TOKEN } from './storage.interface';
+import { StorageController } from './storage.controller';
 
 @Module({
+  controllers: [StorageController],
   providers: [
     {
       provide: STORAGE_PROVIDER_TOKEN,

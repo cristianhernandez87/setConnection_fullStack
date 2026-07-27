@@ -3,6 +3,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 🔥 FIX GLOBAL DE FORMULARIOS: Contraste editorial para inputs, selects y textareas */
+@layer base {
+  input, textarea, select {
+    @apply text-zinc-900 placeholder:text-zinc-400 bg-zinc-50 border-zinc-200;
+  }
+  
+  /* Asegura que al enfocar el input el texto siga siendo completamente oscuro */
+  input:focus, textarea:focus, select:focus {
+    @apply text-black border-black outline-none bg-white;
+  }
+}
+
 /* Regla para transiciones suaves al hacer hover en tarjetas Bento */
 @layer components {
   .bento-card {

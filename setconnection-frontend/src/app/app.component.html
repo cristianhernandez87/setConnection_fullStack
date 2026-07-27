@@ -5,6 +5,9 @@
   <main class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen flex flex-col">
     <router-outlet></router-outlet>
     <app-audio-player></app-audio-player>
+    @if (authService.isAuthModalOpen()) {
+      <app-auth-modal></app-auth-modal>
+    }
   </main>
   
 </div>

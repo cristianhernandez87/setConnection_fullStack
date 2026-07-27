@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,6 +11,15 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-  // 🔥 Signal temporal para simular si el usuario logueado es DJ (lo conectaremos al Auth en el Sprint 8)
-  isDj = signal<boolean>(true); 
+  authService = inject(AuthService);
+
+  isMenuOpen = signal<boolean>(false);
+  toggleMenu(): void {
+    this.isMenuOpen.update(val => !val);
+  }
+
+  logout(): void {
+    this.isMenuOpen.set(false);
+    this.authService.logout();
+  }
 }

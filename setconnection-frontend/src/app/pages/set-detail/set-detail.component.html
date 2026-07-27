@@ -1,0 +1,94 @@
+<div class="max-w-6xl mx-auto px-6 py-8 animate-fade-in">
+  
+  <section class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div>
+      <div class="flex items-center gap-3 mb-4">
+        <span class="bg-black text-white font-condensed font-bold text-xs px-3 py-1 rounded-full uppercase tracking-widest">
+          ⚡ IA Analyzed
+        </span>
+        <span class="text-zinc-400 font-condensed font-bold text-sm uppercase">
+          {{ setInfo().uploadDate }} • {{ setInfo().bpm }}
+        </span>
+      </div>
+
+      <h1 class="font-condensed font-black text-4xl md:text-6xl tracking-ultra-tight uppercase text-zinc-900 leading-none">
+        {{ setInfo().title }}
+      </h1>
+      <p class="font-condensed font-bold text-xl text-bento-cyan mt-2">
+        BY {{ setInfo().artist }}
+      </p>
+    </div>
+
+    <button 
+      (click)="playThisSet()"
+      class="bg-bento-yellow text-black font-condensed font-black text-lg px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg flex items-center gap-3 shrink-0 cursor-pointer">
+      <span class="text-2xl">▶️</span> REPRODUCIR SET COMPLETO
+    </button>
+  </section>
+
+  <section class="bg-white border-2 border-zinc-900 rounded-4xl p-6 md:p-8 mb-12 shadow-md">
+    <div class="flex justify-between items-center mb-4 text-xs font-condensed font-bold uppercase tracking-wider text-zinc-400">
+      <span>Waveform Interactiva & Timestamps de Nodos</span>
+      <span class="text-zinc-900">Haz clic en cualquier punto para saltar</span>
+    </div>
+
+    <div class="w-full h-40 bg-zinc-50 rounded-2xl overflow-hidden border border-zinc-200/80">
+      <app-waveform 
+        [progress]="audioService.progress()" 
+        [nodes]="tracklist()">
+      </app-waveform>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    
+    <div class="md:col-span-1 bg-zinc-900 text-white rounded-4xl p-8 h-fit">
+      <h3 class="font-condensed font-bold text-2xl tracking-tight mb-4 uppercase text-bento-yellow">
+        Acerca de esta mezcla
+      </h3>
+      <p class="text-zinc-400 text-sm leading-relaxed mb-6">
+        {{ setInfo().description }}
+      </p>
+      <div class="border-t border-zinc-800 pt-6 flex justify-between font-condensed text-sm">
+        <span class="text-zinc-500">DURACIÓN TOTAL</span>
+        <span class="font-bold">{{ setInfo().duration }}</span>
+      </div>
+    </div>
+
+    <div class="md:col-span-2 bg-white border border-zinc-200/80 rounded-4xl p-8 shadow-sm">
+      <h3 class="font-condensed font-black text-3xl tracking-tight uppercase text-zinc-900 mb-6">
+        Tracklist Descubierto ({{ tracklist().length }})
+      </h3>
+
+      <div class="divide-y divide-zinc-100">
+        @for (track of tracklist(); track track.id; let idx = $index) {
+          <div 
+            (click)="jumpToTrack(track)"
+            class="py-4 px-4 flex items-center justify-between rounded-2xl cursor-pointer transition-all hover:bg-zinc-50 text-zinc-900">
+            
+            <div class="flex items-center gap-4">
+              <span class="w-8 h-8 rounded-full font-condensed font-bold text-xs flex items-center justify-center bg-zinc-100 text-zinc-500">
+                #{{ idx + 1 }}
+              </span>
+
+              <div>
+                <h4 class="font-bold text-base leading-tight">{{ track.title }}</h4>
+                <span class="text-xs font-condensed opacity-70 uppercase tracking-wider">{{ track.artist }}</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="font-condensed font-bold text-sm px-3 py-1 rounded-full bg-zinc-100 text-zinc-700">
+                ⏱️ {{ track.time }}
+              </span>
+              <span class="text-lg opacity-40">➔</span>
+            </div>
+
+          </div>
+        }
+      </div>
+    </div>
+
+  </section>
+
+</div>

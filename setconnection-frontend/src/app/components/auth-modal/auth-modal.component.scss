@@ -1,0 +1,25 @@
+/* Animación suave para el fondo de vidrio esmerilado */
+.animate-backdrop {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* 🔥 COREOGRAFÍA TACTILE BENTO POP: Escala + Desplazamiento + Opacidad con curva Apple */
+.animate-modal-pop {
+  animation: modalPop 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

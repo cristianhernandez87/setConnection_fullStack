@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  HeadBucketCommand,
+  CreateBucketCommand,
+} from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 import { IStorageProvider } from './storage.interface';
 
@@ -19,7 +24,19 @@ export class S3StorageProvider implements IStorageProvider {
     });
   }
 
+  private async ensureBucketExists(bucket: string): Promise<void> {
+    try {
+      await this.s3Client.send(new HeadBucketCommand({ Bucket: bucket }));
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      // Si no existe, lo creamos automáticamente
+      await this.s3Client.send(new CreateBucketCommand({ Bucket: bucket }));
+      console.log(`📦 Bucket '${bucket}' creado exitosamente en MinIO.`);
+    }
+  }
+
   async uploadFile(file: Express.Multer.File, bucket: string): Promise<string> {
+    await this.ensureBucketExists(bucket);
     const fileKey = `${Date.now()}-${file.originalname}`;
 
     await this.s3Client.send(

@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { StorageModule } from './modules/storage/storage.module';
 import { SetsModule } from './modules/sets/sets.module';
 import { BullModule } from '@nestjs/bullmq';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { BullModule } from '@nestjs/bullmq';
     }),
     StorageModule,
     SetsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,0 +1,110 @@
+<div class="max-w-6xl mx-auto px-6 py-8 animate-fade-in">
+  
+  <section class="mb-10">
+    <h1 class="font-condensed font-black text-5xl md:text-7xl tracking-ultra-tight uppercase text-zinc-900 mb-2">
+      STUDIO: {{ artistName() }}.
+    </h1>
+    <p class="text-lg text-zinc-500 font-normal">
+      Tu centro de mando creativo y gestión de catálogo con IA.
+    </p>
+  </section>
+
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+    
+    <div class="bg-bento-cyan rounded-4xl p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+      <span class="font-condensed font-bold text-black/70 uppercase tracking-wider text-sm">
+        Total Reproducciones
+      </span>
+      <div class="font-condensed font-black text-6xl md:text-7xl tracking-ultra-tight text-black mt-6">
+        {{ stats().totalPlays }}
+      </div>
+    </div>
+
+    <div class="bg-bento-yellow rounded-4xl p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+      <span class="font-condensed font-bold text-black/70 uppercase tracking-wider text-sm">
+        Tracks Descubiertos por IA
+      </span>
+      <div class="font-condensed font-black text-6xl md:text-7xl tracking-ultra-tight text-black mt-6">
+        {{ stats().tracksDiscovered }}
+      </div>
+    </div>
+
+    <div class="bg-zinc-900 text-white rounded-4xl p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+      <span class="font-condensed font-bold text-zinc-400 uppercase tracking-wider text-sm">
+        Almacenamiento MinIO Usado
+      </span>
+      <div class="mt-6 flex items-baseline gap-2">
+        <span class="font-condensed font-black text-5xl md:text-6xl tracking-ultra-tight text-white">
+          {{ stats().storageUsed }}
+        </span>
+        <span class="text-zinc-500 font-condensed font-bold text-xl">
+          / {{ stats().storageLimit }}
+        </span>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="bg-white border border-zinc-200/80 rounded-4xl p-8 shadow-sm">
+    
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-zinc-100">
+      <div>
+        <h2 class="font-condensed font-black text-3xl tracking-tight uppercase text-zinc-900">
+          Gestión de Sets
+        </h2>
+        <p class="text-sm text-zinc-500">Administra tus audios, edita transiciones y revisa los tracklists.</p>
+      </div>
+      <a routerLink="/upload" class="bg-bento-yellow text-black font-condensed font-bold text-sm uppercase px-6 py-3 rounded-full hover:scale-105 transition-transform shadow-sm inline-flex items-center justify-center gap-2 self-start md:self-auto">
+        <span>+</span> Añadir Nuevo Set
+      </a>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-zinc-200 text-xs font-condensed font-bold text-zinc-400 uppercase tracking-widest">
+            <th class="py-4 px-4 w-1/3">Vista Previa Waveform</th>
+            <th class="py-4 px-4">Nombre del Set</th>
+            <th class="py-4 px-4">Duración</th>
+            <th class="py-4 px-4">Estado</th>
+            <th class="py-4 px-4 text-right">Tracks IA</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-100 font-medium text-sm">
+          @for (set of mySets(); track set.id) {
+            <tr class="hover:bg-zinc-50/80 transition-colors group">
+              
+              <td class="py-4 px-4 w-64">
+                <div class="w-full h-12 pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity">
+                  <app-waveform [progress]="set.progress"></app-waveform>
+                </div>
+              </td>
+
+              <td class="py-4 px-4 font-bold text-zinc-900">
+                {{ set.title }}
+              </td>
+
+              <td class="py-4 px-4 text-zinc-500 font-condensed">
+                {{ set.duration }}
+              </td>
+
+              <td class="py-4 px-4">
+                <span [class]="'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-condensed font-bold border ' + set.statusColor">
+                  <span [class]="'w-2 h-2 rounded-full ' + set.statusDot"></span>
+                  {{ set.status }}
+                </span>
+              </td>
+
+              <td class="py-4 px-4 text-right font-condensed font-bold text-base text-zinc-900">
+                🤖 {{ set.tracksCount }}
+              </td>
+
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+</div>
