@@ -1,0 +1,19 @@
+<div 
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/60 animate-backdrop-smooth"
+  (click)="close.emit()">
+  
+  <div 
+    [class]="'bg-white rounded-[32px] md:rounded-[40px] w-full overflow-hidden shadow-2xl border border-zinc-200/80 relative animate-modal-smooth ' + maxWidthClass() + ' ' + paddingClass()"
+    (click)="$event.stopPropagation()">
+
+    <button 
+      type="button"
+      (click)="close.emit()"
+      class="absolute top-5 right-5 w-8 h-8 rounded-full bg-zinc-100/80 hover:bg-zinc-200 flex items-center justify-center text-zinc-500 hover:text-zinc-900 transition-all duration-200 hover:scale-105 cursor-pointer border-none z-30 font-bold text-xs backdrop-blur-sm">
+      ✕
+    </button>
+
+    <ng-content></ng-content>
+
+  </div>
+</div>
