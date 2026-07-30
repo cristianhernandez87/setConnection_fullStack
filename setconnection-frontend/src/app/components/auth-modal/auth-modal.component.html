@@ -1,97 +1,91 @@
-<app-modal-shell 
-  (close)="authService.closeModal()" 
-  size="2xl" >
+<app-modal-shell (close)="authService.closeModal()" size="3xl">
 
-  <div class="flex flex-col md:flex-row min-h-[460px]">
-
-    <!-- 🖤 BANNER IZQUIERDO (Visión de Marca y Estética Neón) -->
+  <div class="flex flex-col md:flex-row min-h-[480px]">
     <div class="hidden md:flex md:w-5/12 bg-[#121316] text-white p-8 flex-col justify-between relative overflow-hidden">
-      
-      <!-- Sombra ambiental verdosa al fondo -->
       <div class="absolute -bottom-10 -left-10 w-44 h-44 bg-[#CCFF00]/10 rounded-full blur-3xl pointer-events-none"></div>
 
       <div>
-        <!-- Pill Neón -->
         <span class="inline-block bg-[#CCFF00] text-black font-condensed font-black text-[11px] px-3 py-1 rounded-full uppercase tracking-wider">
           SETCONNECTION AUTH
         </span>
-
-        <!-- Título principal -->
         <h1 class="font-condensed font-black text-3xl md:text-4xl uppercase leading-none mt-6 tracking-tight text-white">
           ÚNETE A LA ESCENA.
         </h1>
-
-        <!-- Descripción -->
         <p class="text-zinc-400 text-xs mt-4 leading-relaxed font-normal">
           Conecta directamente con los creadores, interactúa en los timestamps de cada mezcla o sube tus propios sets de 2 horas con IA.
         </p>
       </div>
 
-      <!-- Pie del Banner -->
       <div class="pt-4 border-t border-zinc-800/80">
         <span class="text-zinc-500 font-condensed font-bold text-[10px] uppercase tracking-widest block">
           ESCENA TECHNO & ELECTRÓNICA
         </span>
       </div>
-
     </div>
 
-    <!-- 🤍 COLUMNA DERECHA (Formulario de Autenticación) -->
     <div class="w-full md:w-7/12 p-6 md:p-8 bg-white flex flex-col justify-between">
       
       <div>
-        <!-- Pestañas de Selector: INICIAR SESIÓN / CREAR CUENTA -->
-        <div class="flex items-center gap-6 mb-6 border-b border-zinc-100 pb-3 pr-8">
-          <button 
-            type="button"
-            (click)="toggleMode('login')"
-            [class]="mode() === 'login' 
-              ? 'font-condensed font-black text-xl uppercase text-black border-b-2 border-black pb-1 transition-all cursor-pointer bg-transparent border-t-0 border-x-0' 
-              : 'font-condensed font-bold text-xl uppercase text-zinc-400 hover:text-zinc-600 pb-1 transition-all cursor-pointer bg-transparent border-none'">
-            INICIAR SESIÓN
-          </button>
+        @if (mode() !== 'forgot-password') {
+          <div class="flex items-center gap-6 mb-6 border-b border-zinc-100 pb-3 pr-8">
+            <button 
+              type="button"
+              (click)="toggleMode('login')"
+              [class]="mode() === 'login' 
+                ? 'font-condensed font-black text-xl uppercase text-black border-b-2 border-black pb-1 cursor-pointer bg-transparent border-t-0 border-x-0' 
+                : 'font-condensed font-bold text-xl uppercase text-zinc-400 hover:text-zinc-600 pb-1 cursor-pointer bg-transparent border-none'">
+              INICIAR SESIÓN
+            </button>
 
-          <button 
-            type="button"
-            (click)="toggleMode('register')"
-            [class]="mode() === 'register' 
-              ? 'font-condensed font-black text-xl uppercase text-black border-b-2 border-black pb-1 transition-all cursor-pointer bg-transparent border-t-0 border-x-0' 
-              : 'font-condensed font-bold text-xl uppercase text-zinc-400 hover:text-zinc-600 pb-1 transition-all cursor-pointer bg-transparent border-none'">
-            CREAR CUENTA
-          </button>
-        </div>
+            <button 
+              type="button"
+              (click)="toggleMode('register')"
+              [class]="mode() === 'register' 
+                ? 'font-condensed font-black text-xl uppercase text-black border-b-2 border-black pb-1 cursor-pointer bg-transparent border-t-0 border-x-0' 
+                : 'font-condensed font-bold text-xl uppercase text-zinc-400 hover:text-zinc-600 pb-1 cursor-pointer bg-transparent border-none'">
+              CREAR CUENTA
+            </button>
+          </div>
+        } @else {
+          <div class="mb-6 border-b border-zinc-100 pb-3">
+            <h2 class="font-condensed font-black text-xl uppercase text-black">RECUPERAR CONTRASEÑA</h2>
+          </div>
+        }
 
-        <!-- Alertas de Error -->
         @if (errorMessage()) {
           <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-xs font-medium animate-fade-in">
             ⚠️ {{ errorMessage() }}
           </div>
         }
 
-        <!-- Formulario principal -->
-        <form (ngSubmit)="onSubmit()" class="space-y-4">
+        @if (successMessage()) {
+          <div class="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-2xl text-xs font-medium animate-fade-in">
+            ✅ {{ successMessage() }}
+          </div>
+        }
 
-          <!-- Selector de Rol (Solo visible en 'register') -->
+        <form (ngSubmit)="onSubmit()" class="space-y-3">
+
           @if (mode() === 'register') {
-            <div class="grid grid-cols-2 gap-2 mb-3">
+            <div class="grid grid-cols-2 gap-2 mb-2">
               <button 
                 type="button"
                 (click)="selectRole('FAN')"
                 [class]="selectedRole() === 'FAN' 
-                  ? 'p-3 rounded-2xl border-2 border-black bg-zinc-50 flex flex-col text-left cursor-pointer' 
-                  : 'p-3 rounded-2xl border border-zinc-200 bg-white hover:border-zinc-300 flex flex-col text-left cursor-pointer'">
+                  ? 'p-2.5 rounded-2xl border-2 border-black bg-zinc-50 flex flex-col text-left cursor-pointer' 
+                  : 'p-2.5 rounded-2xl border border-zinc-200 bg-white hover:border-zinc-300 flex flex-col text-left cursor-pointer'">
                 <span class="text-sm mb-0.5">🎧</span>
-                <span class="font-condensed font-bold text-xs uppercase text-zinc-900">OYENTE / FAN</span>
+                <span class="font-condensed font-bold text-[11px] uppercase text-zinc-900">OYENTE / FAN</span>
               </button>
 
               <button 
                 type="button"
                 (click)="selectRole('DJ')"
                 [class]="selectedRole() === 'DJ' 
-                  ? 'p-3 rounded-2xl border-2 border-black bg-zinc-50 flex flex-col text-left cursor-pointer' 
-                  : 'p-3 rounded-2xl border border-zinc-200 bg-white hover:border-zinc-300 flex flex-col text-left cursor-pointer'">
+                  ? 'p-2.5 rounded-2xl border-2 border-black bg-zinc-50 flex flex-col text-left cursor-pointer' 
+                  : 'p-2.5 rounded-2xl border border-zinc-200 bg-white hover:border-zinc-300 flex flex-col text-left cursor-pointer'">
                 <span class="text-sm mb-0.5">🎛️</span>
-                <span class="font-condensed font-bold text-xs uppercase text-zinc-900">CREADOR / DJ</span>
+                <span class="font-condensed font-bold text-[11px] uppercase text-zinc-900">CREADOR / DJ</span>
               </button>
             </div>
 
@@ -102,7 +96,7 @@
                 [(ngModel)]="name" 
                 name="name"
                 placeholder="Ej. Dex Music"
-                class="w-full px-4 py-3 bg-[#F4F4F5] border border-zinc-200/60 rounded-2xl text-xs font-medium text-zinc-900 focus:outline-none focus:border-black transition-colors" />
+                class="w-full px-4 py-2.5 bg-[#F4F4F5] border border-zinc-200/60 rounded-2xl text-xs font-medium text-zinc-900 focus:outline-none focus:border-black transition-colors" />
             </div>
           }
 
@@ -114,32 +108,74 @@
               name="email"
               required
               placeholder="correo@ejemplo.com"
-              class="w-full px-4 py-3 bg-[#F4F4F5] border border-zinc-200/60 rounded-2xl text-xs font-medium text-zinc-900 focus:outline-none focus:border-black transition-colors" />
+              class="w-full px-4 py-2.5 bg-[#F4F4F5] border border-zinc-200/60 rounded-2xl text-xs font-medium text-zinc-900 focus:outline-none focus:border-black transition-colors" />
           </div>
 
-          <div>
-            <label class="block text-[10px] font-condensed font-bold uppercase text-zinc-500 mb-1 tracking-wider">Contraseña</label>
-            <input 
-              type="password" 
-              [(ngModel)]="password" 
-              name="password"
-              required
-              placeholder="••••••••"
-              class="w-full px-4 py-3 bg-[#F4F4F5] border border-zinc-200/60 rounded-2xl text-xs font-medium text-zinc-900 focus:outline-none focus:border-black transition-colors" />
-          </div>
+          @if (mode() !== 'forgot-password') {
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[10px] font-condensed font-bold uppercase text-zinc-500 tracking-wider">Contraseña</label>
+                @if (mode() === 'login') {
+                  <button 
+                    type="button" 
+                    (click)="toggleMode('forgot-password')"
+                    class="text-[10px] text-zinc-500 hover:text-black font-medium transition-colors bg-transparent border-none cursor-pointer p-0">
+                    ¿Olvidaste tu contraseña?
+                  </button>
+                }
+              </div>
+              <input 
+                type="password" 
+                [(ngModel)]="password" 
+                name="password"
+                required
+                placeholder="••••••••"
+                class="w-full px-4 py-2.5 bg-[#F4F4F5] border border-zinc-200/60 rounded-2xl text-xs font-medium text-zinc-900 focus:outline-none focus:border-black transition-colors" />
+            </div>
+
+            @if (mode() === 'register') {
+              <div>
+                <label class="block text-[10px] font-condensed font-bold uppercase text-zinc-500 mb-1 tracking-wider">Confirmar Contraseña</label>
+                <input 
+                  type="password" 
+                  [(ngModel)]="confirmPassword" 
+                  name="confirmPassword"
+                  required
+                  placeholder="••••••••"
+                  class="w-full px-4 py-2.5 bg-[#F4F4F5] border border-zinc-200/60 rounded-2xl text-xs font-medium text-zinc-900 focus:outline-none focus:border-black transition-colors" />
+                <p class="text-[9px] text-zinc-400 mt-1">
+                  Mínimo 8 caracteres, 1 mayúscula y 1 número o símbolo.
+                </p>
+              </div>
+            }
+          }
 
           <button 
             type="submit"
             [disabled]="isLoading()"
-            class="w-full mt-4 py-3.5 bg-black text-white font-condensed font-bold text-sm uppercase tracking-wider rounded-full hover:bg-zinc-800 transition-transform hover:scale-[1.01] shadow-md cursor-pointer flex items-center justify-center gap-2 border-none disabled:opacity-50">
-            <span>{{ isLoading() ? 'CONECTANDO...' : (mode() === 'login' ? 'ENTRAR A LA PLATAFORMA' : 'CREAR MI CUENTA AHORA') }}</span>
+            class="w-full mt-3 py-3 bg-black text-white font-condensed font-bold text-xs uppercase tracking-wider rounded-full hover:bg-zinc-800 transition-transform hover:scale-[1.01] shadow-md cursor-pointer flex items-center justify-center gap-2 border-none disabled:opacity-50">
+            <span>
+              @if (isLoading()) { CONECTANDO... }
+              @else if (mode() === 'login') { ENTRAR A LA PLATAFORMA }
+              @else if (mode() === 'register') { CREAR MI CUENTA AHORA }
+              @else { ENVIAR ENLACE DE RECUPERACIÓN }
+            </span>
             <span>➔</span>
           </button>
+
+          @if (mode() === 'forgot-password') {
+            <button 
+              type="button" 
+              (click)="toggleMode('login')"
+              class="w-full text-center text-xs text-zinc-500 hover:text-black mt-2 bg-transparent border-none cursor-pointer">
+              ← Volver al inicio de sesión
+            </button>
+          }
+
         </form>
       </div>
 
-      <!-- Pie legal inferior -->
-      <p class="text-[10px] text-zinc-400 text-center mt-6">
+      <p class="text-[10px] text-zinc-400 text-center mt-4">
         Al continuar, aceptas los términos y condiciones de SetConnection.
       </p>
 

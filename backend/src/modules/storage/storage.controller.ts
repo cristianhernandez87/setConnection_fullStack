@@ -15,7 +15,7 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../auth/dto/register-auth.dto';
+import { UserRole } from '../auth/dto/authRegister.dto';
 
 @Controller('storage')
 export class StorageController {

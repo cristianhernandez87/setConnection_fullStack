@@ -1,70 +1,138 @@
 import {
   Injectable,
   UnauthorizedException,
+  ConflictException,
   BadRequestException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { RegisterAuthDto, UserRole } from './dto/register-auth.dto';
-import { LoginAuthDto } from './dto/login-auth.dto';
+import { randomBytes } from 'crypto';
+import { User } from '../auth/entities/user.entity';
+import { RegisterAuthDto, UserRole } from './dto/authRegister.dto';
+import { LoginAuthDto } from './dto/authLogin.dto';
+import { MailService } from '../mail/mail.service';
+import { ForgotPasswordDto } from './dto/authForgotPass.dto';
+import { ResetPasswordDto } from './dto/authResetPass.dto';
 
 @Injectable()
 export class AuthService {
-  // En un entorno de producción, aquí inyectarías @InjectRepository(UserEntity)
-  // Simulación en memoria para validar el flujo arquitectónico rápido:
-  private mockUsers: Array<any> = [];
-
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
+  ) {}
 
   async register(dto: RegisterAuthDto) {
-    const existingUser = this.mockUsers.find((u) => u.email === dto.email);
+    const { email, password, name, role } = dto;
+    const existingUser = await this.userRepository.findOne({
+      where: { email },
+    });
     if (existingUser) {
-      throw new BadRequestException(
-        'Este correo electrónico ya está registrado.',
-      );
+      throw new ConflictException('El correo electrónico ya está registrado.');
     }
 
-    // 🔥 Hashing de contraseña (Defensive Programming)
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(dto.password, salt);
-
-    const newUser = {
-      id: 'u-' + Date.now(),
-      email: dto.email,
-      name: dto.name || dto.email.split('@')[0].toUpperCase(),
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = this.userRepository.create({
+      email,
       password: hashedPassword,
-      role: dto.role || UserRole.FAN,
-    };
+      name: name || email.split('@')[0],
+      role: role || UserRole.FAN,
+    });
 
-    this.mockUsers.push(newUser);
-    return this.generateTokenResponse(newUser);
+    const savedUser = await this.userRepository.save(newUser);
+    const token = this.generateJwtToken(savedUser);
+
+    return {
+      user: {
+        id: savedUser.id,
+        email: savedUser.email,
+        name: savedUser.name,
+        role: savedUser.role,
+      },
+      token,
+    };
   }
 
   async login(dto: LoginAuthDto) {
-    const user = this.mockUsers.find((u) => u.email === dto.email);
-    if (!user) {
+    const { email, password } = dto;
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user || !user.password) {
       throw new UnauthorizedException('Credenciales inválidas.');
     }
 
-    // Validar contraseña contra el hash
-    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales inválidas.');
     }
 
-    return this.generateTokenResponse(user);
-  }
+    const token = this.generateJwtToken(user);
 
-  private generateTokenResponse(user: any) {
-    const payload = { sub: user.id, email: user.email, role: user.role };
     return {
       user: {
         id: user.id,
-        name: user.name,
         email: user.email,
+        name: user.name,
         role: user.role,
       },
-      accessToken: this.jwtService.sign(payload),
+      token,
     };
+  }
+
+  private generateJwtToken(user: User): string {
+    const payload = { sub: user.id, email: user.email, role: user.role };
+    return this.jwtService.sign(payload);
+  }
+
+  async forgotPassword(dto: ForgotPasswordDto) {
+    const { email } = dto;
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      return {
+        message:
+          'Si el correo está registrado, recibirás un enlace de recuperación.',
+      };
+    }
+
+    const resetToken = randomBytes(32).toString('hex');
+    const expires = new Date();
+    expires.setHours(expires.getHours() + 1);
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = expires;
+
+    await this.userRepository.save(user);
+    await this.mailService.sendResetPasswordEmail(email, resetToken);
+
+    return {
+      message:
+        'Si el correo está registrado, recibirás un enlace de recuperación.',
+    };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const { token, newPassword } = dto;
+    const user = await this.userRepository.findOne({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: MoreThan(new Date()),
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException(
+        'El token de recuperación es inválido o ha expirado.',
+      );
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+
+    await this.userRepository.save(user);
+
+    return { message: 'La contraseña ha sido actualizada con éxito.' };
   }
 }

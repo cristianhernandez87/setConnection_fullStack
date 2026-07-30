@@ -2,7 +2,7 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { User, AuthResponse, UserRole } from '../models/user.model'; // <-- Importación limpia
+import { User, AuthResponse, UserRole } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class AuthService {
 
   currentUser = signal<User | null>(this.getStoredUser());
   isAuthModalOpen = signal<boolean>(false);
-
+  modalMode = signal<'login' | 'register' | 'forgot-password'>('login');
   isAuthenticated = computed(() => this.currentUser() !== null);
   isDj = computed(() => this.currentUser()?.role === 'DJ');
   canInteract = computed(() => {
@@ -23,7 +23,8 @@ export class AuthService {
     return role === 'FAN' || role === 'DJ';
   });
 
-  openModal(): void {
+  openModal(mode: 'login' | 'register' | 'forgot-password' = 'login'): void {
+    this.modalMode.set(mode);
     this.isAuthModalOpen.set(true);
   }
 
@@ -43,6 +44,14 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/reset-password`, { token, newPassword });
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -52,10 +61,17 @@ export class AuthService {
   }
 
   private handleAuthSuccess(response: AuthResponse): void {
-    localStorage.setItem('token', response.accessToken);
+    if (!response || !response.user) return;
+
+    const token = response.token || response.accessToken;
+    if (token) {
+      localStorage.setItem('token', token);
+    }
+    
     localStorage.setItem('user', JSON.stringify(response.user));
     this.currentUser.set(response.user);
     this.closeModal();
+
     console.log(`🔐 Sesión iniciada con éxito: ${response.user.name} [Rol: ${response.user.role}]`);
 
     if (response.user.role === 'DJ') {

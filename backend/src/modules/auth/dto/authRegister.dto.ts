@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Matches,
   MinLength,
 } from 'class-validator';
 
@@ -15,11 +16,15 @@ export enum UserRole {
 export class RegisterAuthDto {
   @IsEmail({}, { message: 'El correo electrónico debe ser válido.' })
   @IsNotEmpty()
-  email!: string; // 🔥 Agregamos el signo ! para asegurar que no es undefined
+  email!: string;
 
   @IsString()
-  @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres.' })
-  password!: string; // 🔥 Agregamos el signo !
+  @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres.' })
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+    message:
+      'La contraseña debe contener al menos 1 mayúscula, 1 minúscula y 1 número o carácter especial.',
+  })
+  password!: string;
 
   @IsString()
   @IsOptional()

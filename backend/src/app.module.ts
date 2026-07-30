@@ -7,6 +7,8 @@ import { StorageModule } from './modules/storage/storage.module';
 import { SetsModule } from './modules/sets/sets.module';
 import { BullModule } from '@nestjs/bullmq';
 import { AuthModule } from './modules/auth/auth.module';
+import { User } from './modules/auth/entities/user.entity';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -33,12 +35,14 @@ import { AuthModule } from './modules/auth/auth.module';
         password: configService.get<string>('DB_PASS'),
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
+        entities: [User],
         synchronize: true,
       }),
     }),
     StorageModule,
     SetsModule,
     AuthModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
