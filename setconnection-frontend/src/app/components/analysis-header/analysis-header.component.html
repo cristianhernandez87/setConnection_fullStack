@@ -1,12 +1,19 @@
-<div class="analysis-card" *ngIf="isAnalyzing()">
-  <div class="header">
-    <h3 class="title">🤖 IA Analizando Set...</h3>
-    <span class="percentage">{{ progress() }}%</span>
+<div *ngIf="isAnalyzing() || progress() > 0" class="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+  <div class="mb-2 flex items-center justify-between gap-4">
+    <h3 class="text-base font-bold text-slate-900">
+      {{ progress() === 100 ? 'Análisis de Set' : 'IA Analizando Set...' }}
+    </h3>
+    <span class="font-mono text-sm font-bold text-emerald-700">{{ progress() }}%</span>
   </div>
-  
-  <div class="progress-bg">
-    <div class="progress-fill" [style.width.%]="progress()"></div>
+
+  <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-100 border border-slate-200">
+    <div
+      class="h-2.5 rounded-full bg-emerald-600 transition-all duration-300"
+      [style.width.%]="progress()"
+    ></div>
   </div>
-  
-  <p class="complete-text" *ngIf="progress() === 100">✨ ¡Análisis completado con éxito!</p>
+
+  <p *ngIf="progress() === 100" class="mt-3 text-xs font-semibold text-emerald-700">
+    ✨ ¡Análisis completado con éxito!
+  </p>
 </div>

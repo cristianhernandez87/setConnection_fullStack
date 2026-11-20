@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { SetEntity } from './entities/set.entity';
+import { SetEntity, SetStatus } from './entities/set.entity';
 import { CreateSetDto } from './dto/create-set.dto';
 import {
   STORAGE_PROVIDER_TOKEN,
@@ -22,7 +22,7 @@ export class SetsService {
     private readonly slugService: SlugService,
 
     @InjectQueue('audio-processing-queue')
-    private audioQueue: bull.Queue,
+    private readonly audioQueue: bull.Queue,
   ) {}
 
   async createSet(
@@ -38,11 +38,18 @@ export class SetsService {
       description: createSetDto.description,
       filename: cleanFileName,
       audioUrl: fileKey,
-      audioSize: file.size,
+      status: SetStatus.PENDING,
     });
+
     const savedSet = await this.setRepository.save(newSet);
     await this.audioQueue.add('analyze-audio', { setId: savedSet.id });
     return savedSet;
+  }
+
+  async findAllSets(): Promise<SetEntity[]> {
+    return await this.setRepository.find({
+      order: { createdAt: 'DESC' },
+    });
   }
 
   async getTracklist(setId: string): Promise<SetEntity> {

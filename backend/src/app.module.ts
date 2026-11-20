@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StorageModule } from './modules/storage/storage.module';
 import { SetsModule } from './modules/sets/sets.module';
-import { BullModule } from '@nestjs/bullmq';
+import { BullModule } from '@nestjs/bull';
 import { AuthModule } from './modules/auth/auth.module';
 import { User } from './modules/auth/entities/user.entity';
 import { MailModule } from './modules/mail/mail.module';
@@ -16,13 +16,10 @@ import { MailModule } from './modules/mail/mail.module';
       isGlobal: true,
     }),
     BullModule.forRoot({
-      connection: {
-        host: 'localhost',
-        port: 6379,
+      redis: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379', 10),
       },
-    }),
-    BullModule.registerQueue({
-      name: 'audio-analysis',
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

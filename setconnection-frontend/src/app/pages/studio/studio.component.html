@@ -1,19 +1,29 @@
 <div class="max-w-6xl mx-auto px-6 py-8 animate-fade-in">
   
-  <section class="mb-10">
-    <h1 class="font-condensed font-black text-5xl md:text-7xl tracking-ultra-tight uppercase text-zinc-900 mb-2">
-      STUDIO: {{ artistName() }}.
-    </h1>
-    <p class="text-lg text-zinc-500 font-normal">
-      Tu centro de mando creativo y gestión de catálogo con IA.
-    </p>
+  <section class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div>
+      <h1 class="font-condensed font-black text-5xl md:text-7xl tracking-ultra-tight uppercase text-zinc-900 mb-2">
+        STUDIO: {{ artistName() }}.
+      </h1>
+      <p class="text-lg text-zinc-500 font-normal">
+        Tu centro de mando creativo y gestión de catálogo con IA.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      (click)="loadSets()"
+      class="bg-white border border-zinc-200 text-zinc-800 font-condensed font-bold text-xs uppercase px-5 py-2.5 rounded-full hover:bg-zinc-50 transition-colors self-start md:self-auto"
+    >
+      Actualizar Lista
+    </button>
   </section>
 
   <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
     
     <div class="bg-bento-cyan rounded-4xl p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
       <span class="font-condensed font-bold text-black/70 uppercase tracking-wider text-sm">
-        Total Reproducciones
+        Sets Registrados
       </span>
       <div class="font-condensed font-black text-6xl md:text-7xl tracking-ultra-tight text-black mt-6">
         {{ stats().totalPlays }}
@@ -59,51 +69,63 @@
       </a>
     </div>
 
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse">
-        <thead>
-          <tr class="border-b border-zinc-200 text-xs font-condensed font-bold text-zinc-400 uppercase tracking-widest">
-            <th class="py-4 px-4 w-1/3">Vista Previa Waveform</th>
-            <th class="py-4 px-4">Nombre del Set</th>
-            <th class="py-4 px-4">Duración</th>
-            <th class="py-4 px-4">Estado</th>
-            <th class="py-4 px-4 text-right">Tracks IA</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-zinc-100 font-medium text-sm">
-          @for (set of mySets(); track set.id) {
-            <tr class="hover:bg-zinc-50/80 transition-colors group">
-              
-              <td class="py-4 px-4 w-64">
-                <div class="w-full h-12 pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity">
-                  <app-waveform [progress]="set.progress"></app-waveform>
-                </div>
-              </td>
-
-              <td class="py-4 px-4 font-bold text-zinc-900">
-                {{ set.title }}
-              </td>
-
-              <td class="py-4 px-4 text-zinc-500 font-condensed">
-                {{ set.duration }}
-              </td>
-
-              <td class="py-4 px-4">
-                <span [class]="'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-condensed font-bold border ' + set.statusColor">
-                  <span [class]="'w-2 h-2 rounded-full ' + set.statusDot"></span>
-                  {{ set.status }}
-                </span>
-              </td>
-
-              <td class="py-4 px-4 text-right font-condensed font-bold text-base text-zinc-900">
-                🤖 {{ set.tracksCount }}
-              </td>
-
+    @if (isLoading()) {
+      <div class="py-10 text-center text-sm text-zinc-500">
+        Cargando sets desde la base de datos...
+      </div>
+    } @else if (errorMessage()) {
+      <div class="py-10 text-center text-sm font-medium text-red-600">
+        {{ errorMessage() }}
+      </div>
+    } @else if (sets().length === 0) {
+      <div class="py-10 text-center text-sm text-zinc-500 border border-dashed border-zinc-200 rounded-2xl">
+        Aún no hay sets guardados en la base de datos. Usa <strong>+ Añadir Nuevo Set</strong> para subir el primero.
+      </div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-zinc-200 text-xs font-condensed font-bold text-zinc-400 uppercase tracking-widest">
+              <th class="py-4 px-4 w-1/3">Archivo / Audio</th>
+              <th class="py-4 px-4">Nombre del Set</th>
+              <th class="py-4 px-4">Duración</th>
+              <th class="py-4 px-4">Estado</th>
+              <th class="py-4 px-4 text-right">Tracks IA</th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody class="divide-y divide-zinc-100 font-medium text-sm">
+            @for (set of sets(); track set.id) {
+              <tr class="hover:bg-zinc-50/80 transition-colors group">
+                
+                <td class="py-4 px-4 w-64 text-zinc-500 truncate max-w-xs">
+                  {{ set.fileName || set.filename || set.audioUrl || 'Audio en MinIO' }}
+                </td>
+
+                <td class="py-4 px-4 font-bold text-zinc-900">
+                  {{ set.title }}
+                </td>
+
+                <td class="py-4 px-4 text-zinc-500 font-condensed">
+                  {{ set.durationSec ? (set.durationSec + 's') : '--:--' }}
+                </td>
+
+                <td class="py-4 px-4">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-condensed font-bold border border-zinc-200 bg-zinc-50 text-zinc-800">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    {{ set.status || 'PENDING' }}
+                  </span>
+                </td>
+
+                <td class="py-4 px-4 text-right font-condensed font-bold text-base text-zinc-900">
+                  🤖 {{ set.tracksCount ?? 0 }}
+                </td>
+
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
 
   </section>
 

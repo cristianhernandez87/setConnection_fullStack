@@ -3,22 +3,27 @@ import { HomeComponent } from './pages/home/home.component';
 import { UploadComponent } from './pages/upload/upload.component';
 import { StudioComponent } from './pages/studio/studio.component';
 import { SetDetailComponent } from './pages/set-detail/set-detail.component';
-import { authGuard, djGuard } from './guards/auth.guard';  
-import { ResetPasswordComponent } from './components/reset-password/reset-password.component';  
+import { authGuard, djGuard } from './guards/auth.guard';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { 
-    path: 'upload', 
+  {
+    path: 'upload',
     component: UploadComponent,
-    canActivate: [authGuard, djGuard]
+    canActivate: [authGuard, djGuard],
   },
-  { 
-    path: 'studio', 
+  {
+    path: 'studio',
     component: StudioComponent,
-    canActivate: [authGuard, djGuard]
+    canActivate: [authGuard, djGuard],
+  },
+  {
+    path: 'sets/:id',
+    loadComponent: () =>
+      import('./pages/set-detail/set-detail.component').then((m) => m.SetDetailComponent),
   },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'set/:id', component: SetDetailComponent },
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
 ];
